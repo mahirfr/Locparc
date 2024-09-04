@@ -1,0 +1,31 @@
+img {
+    width: 7em;
+}
+
+/* .shopping_cart {
+    
+} */
+
+.material-symbols-outlined {
+    /* font-variation-settings:
+        'wght' 600,
+        'FILL' 0; */
+    color: white;
+    margin-right: 2rem;
+    font-size: xx-large;
+}
+
+@media screen and (max-width: 1200px) {
+
+    .navbar {
+        text-align: center;
+    }
+
+    .material-symbols-outlined {
+        font-size: x-large;
+    }
+
+    img {
+        width: 5em;
+    }
+}

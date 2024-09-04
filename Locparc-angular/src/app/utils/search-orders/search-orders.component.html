@@ -1,0 +1,45 @@
+<ng-container [ngSwitch]="errorCode">
+
+    <form [formGroup]="searchFormGroup"
+    (ngSubmit)="onSubmitSearchFormGroup()">
+        <mat-form-field>
+            <mat-label>Cherchez</mat-label>
+            <input matInput formControlName="searchQuery" placeholder="Ex. Dupont...">
+            
+        </mat-form-field>
+        <button mat-raised-button color="accent" class="mx-1" >Cherchez</button>
+    </form>
+            
+    <div class="custom-container mt-5">
+        <table>
+            <tbody>
+                <tr *ngFor="let order of userOrders" class="border">
+                    <td data-label="Email"                >{{ order.user?.email }}</td>
+                    <td data-label="Date de début"        >{{ order.startDate | date }}</td>
+                    <td data-label="Date de fin"          >{{ order.endDate   | date }}</td>
+                    <td data-label="Statut de la commande"> 
+                        {{ order.request?.approved && order.request!.responseDate != null ? orderReturnIsApproved(order.orderedItems!) ? "Validée et clôturée le " + (order.orderedItems![0].returnDate | date) : "Validée et non rendu" : !order.request?.approved && order.request!.responseDate === null ? "En attente" : "Refusée" }}
+                    </td>
+                    <td data-label="Matériel commandé">
+                        <div *ngFor="let items of order.orderedItems">
+                        <p class="item-color">{{ items.item?.name }}</p>
+                        </div>
+                    </td>
+                    <td data-label="Action">
+                        <button  mat-raised-button color="accent" class="mx-1 mb-1 " (click)="openOrderDialog(order)">{{ (order.request?.approved && order.request!.responseDate != null) && !orderReturnIsApproved(order.orderedItems!) ? "Clôturer" : "Consulter" }}</button>
+                        <button  mat-raised-button color="warn" class="mx-1 mb-1" (click)="openRemovalDialog(order)">Supprimer</button>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+    </div>
+
+    <div *ngSwitchCase="404" class="mx-auto text-center">
+        <h2 class="text-center text-white">Il n'y a pas de commandes</h2>
+    </div>
+
+    <div *ngSwitchCase="500">
+        <h2 class="text-center text-white">Une erreur s'est produite</h2>
+    </div>
+
+</ng-container>

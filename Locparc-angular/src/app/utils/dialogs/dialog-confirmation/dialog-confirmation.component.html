@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+    {{data.content}} 
+</mat-dialog-content>
+<mat-dialog-actions >
+    <div class="mx-auto">
+        <button mat-button (click)="onCloseClick()">Fermer</button>
+        <button mat-raised-button color="warn" (click)="onConfirm(data.action)">Confirmer</button>
+    </div>
+</mat-dialog-actions>

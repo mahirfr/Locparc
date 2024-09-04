@@ -1,0 +1,10 @@
+<mat-form-field class="item-width">
+    <mat-label>Entrez les dates de la location</mat-label>
+    <mat-date-range-input [rangePicker]="picker" [formGroup]="dateRange">
+        <input matStartDate formControlName="start" placeholder="Date de début">
+        <input matEndDate formControlName="end" placeholder="Date de fin">
+      </mat-date-range-input>
+    <mat-hint class="text-white">DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>

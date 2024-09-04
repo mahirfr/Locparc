@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+    {{data.content}}
+
+    <ng-container *ngIf="data.action === 'completion' || data.action === 'my-order-modification'">
+        <h2 class="mt-3">Adresse</h2>
+        <mat-form-field>
+          <input matInput placeholder="Numéro de rue" [(ngModel)]="streetNumber">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Nom de la rue" [(ngModel)]="street">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Détails de l'adresse" [(ngModel)]="addressDetails">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Ville" [(ngModel)]="city">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Code postal" [(ngModel)]="postalCode">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Pays</mat-label>
+          <mat-select [(ngModel)]="selectedCountry">
+            <mat-option *ngFor="let country of countries" [value]="country">
+              {{ country.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <h2>Motif</h2>
+        <mat-form-field>
+          <input matInput placeholder="Evénement ou motif" [(ngModel)]="motive">
+        </mat-form-field>
+      </ng-container>
+    <select *ngIf="data.action === 'modify' || data.action === 'my-order-modification'" [(ngModel)]="selectedQuantity">
+    <option *ngFor="let option of getRange(data.item.quantity)">
+      {{ option }}
+    </option>
+  </select>
+</mat-dialog-content>
+<mat-dialog-actions >
+    <div class="mx-auto">
+        <button mat-button (click)="onCloseClick()">Fermer</button>
+        <button mat-raised-button color="warn" (click)="onConfirm(data.action)">Confirmer</button>
+        
+    </div>
+</mat-dialog-actions>

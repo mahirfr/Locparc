@@ -1,0 +1,37 @@
+<h1 *ngIf="!cartItems || cartItems.length === 0" class="text-center text-white">Votre panier est vide</h1>
+<div *ngIf="cartItems && cartItems.length > 0" class="mx-auto item_max_width ">
+    <h1 class="text-center text-white">Votre commande:</h1>
+    <br>
+    <div *ngFor="let item of cartItems">
+                    
+        <mat-card class="example-card min_width mt-3" *ngIf="cartItems">
+            <mat-card-header>
+                <mat-card-title-group>
+                    <mat-card-title class="me-2">{{ item.name }}</mat-card-title>
+                    <mat-card-subtitle>
+                        <h3>Quantité: {{item.quantity}}</h3>
+                    </mat-card-subtitle>
+                    <img *ngIf="item.imageUrl != null" mat-card-md-image [src]="item.imageUrl" [alt]="item.name"/> 
+                </mat-card-title-group>
+            </mat-card-header>
+            <mat-card-actions class="ms-auto">
+                <button mat-raised-button color="accent" (click)="openModifyDialog(item)">Modifier</button>
+                <button mat-raised-button color="warn" class="mx-3" (click)="openRemovalDialog(item)">Supprimer</button>
+            </mat-card-actions>
+        </mat-card> 
+
+    </div>
+
+    <div class="mt-5 text-center">
+        <app-date-range-picker #dateRangePicker></app-date-range-picker>
+        <mat-error *ngIf="(startDate && endDate) && !isValidDateRange(startDate!, endDate!)">
+            Entrez les dates correctes pour continuer
+        </mat-error>
+    </div>
+
+    <div class="mt-5 text-center">
+        <button mat-raised-button color="warn" class="mx-3" (click)="openCartClearingConfirmationDialog()">Vider  <mat-icon>shopping_cart</mat-icon></button>
+        <button *ngIf="startDate && endDate && isValidDateRange(startDate, endDate)"  mat-raised-button color="primary" (click)="openOrderCompletionDialog()">Poursuivre</button>
+    </div>
+
+</div>

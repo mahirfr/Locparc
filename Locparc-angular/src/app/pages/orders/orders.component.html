@@ -1,0 +1,21 @@
+<!-- TODO: make a mat-tab-group -->
+<h1 class="text-center text-white">Commandes</h1>
+<mat-tab-group dynamicHeight class="mat-tab-group" backgroundColor="accent" color="primary" (selectedTabChange)="onTabChange($event)">
+    
+    <mat-tab *ngIf="isAdmin" label="En attente">
+        <app-planning></app-planning>
+    </mat-tab>
+    
+    <mat-tab *ngIf="isAdmin" label="Rechercher">
+        <app-search-orders></app-search-orders>
+    </mat-tab>
+
+    <mat-tab label="Mes commandes">
+        <app-my-orders></app-my-orders>
+    </mat-tab>
+
+    <mat-tab label="Historique">
+        <app-order-history></app-order-history>
+    </mat-tab> 
+
+</mat-tab-group>

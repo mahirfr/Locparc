@@ -1,0 +1,61 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+html, body { 
+    height: 100%;
+}
+
+body { 
+    display: flex;
+    flex-direction: column;
+    background-color: #20374c !important;
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+.content {
+    flex: 1;
+    padding-bottom: 2em;
+    background-color: #20374c;
+}
+  
+.my-footer {
+    height: 4rem;
+    background-color: #ff6025;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    flex-shrink: 0;
+}
+
+.my-footer, a {
+    text-decoration: none;
+}
+
+.contact-link {
+    display: flex; 
+    align-items: center; 
+    margin-right: 20px; 
+}
+  
+.contact-link i {
+    margin-right: 5px; 
+}
+
+
+.container { 
+    margin: 2em; 
+    width: 100% !important;
+    height: 100%;
+    min-height: 100%;
+}
+
+.modal-backdrop {
+    --bs-backdrop-zindex: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .desktop-only {
+      display: none;
+    }
+}

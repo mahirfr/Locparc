@@ -1,0 +1,288 @@
+<h1 class="text-center text-white mt-3">Ajoutez des équipements</h1>
+
+<!-- TODO: CREATE A MAT-TAB-GROUP -->
+<!-- with a field for searching and for modifying/deleting an item -->
+<form [formGroup]="formGroup"
+    (ngSubmit)="onSubmit()">
+    
+    <!-- Name field-->
+    <mat-form-field class="form-field">
+        <mat-label>Nom de l'équipement</mat-label>
+        <input matInput formControlName="itemName"/>
+        <mat-error *ngIf="formGroup.get('itemName')?.hasError('required')">
+            Nom de l'équipement requis
+        </mat-error>
+    </mat-form-field>    
+    
+    <!-- Sub category field -->
+    <mat-form-field class="form-field">
+        <mat-label>Sélectionnez la catégorie</mat-label>
+        <mat-select formControlName="selectedSubCategory" (selectionChange)="onSelectedSubCatValueChange()">
+            <mat-optgroup *ngFor="let category of categories" [label]="category.name">
+                <mat-option *ngFor="let subCat of category.subCategories" [value]="subCat.name">
+                    {{subCat.name}}
+                </mat-option>
+                <br>
+                <button type="button" mat-raised-button color="primary" [value]="category.id" (click)="openSubCategoryModal(category.id!)" data-bs-toggle="modal" data-bs-target="#myModal3">
+                    <mat-icon>add</mat-icon>Sous-catégorie
+                </button> 
+            </mat-optgroup>
+            <hr>
+            <button type="button" mat-raised-button color="accent" class="mx-1 button-size" data-bs-toggle="modal" data-bs-target="#myModal1">
+                <mat-icon>add</mat-icon> Catégorie
+            </button>        
+        </mat-select>
+        <mat-error *ngIf="formGroup.get('selectedSubCategory')?.hasError('required')">
+            Catégorie de l'équipement requise
+        </mat-error>
+    </mat-form-field>
+
+    <!-- Model field -->
+    <mat-form-field class="form-field">
+        <mat-label>Sélectionnez le modèle</mat-label>
+        <mat-select formControlName="selectedModel" (selectionChange)="onSelectedModelValueChange()">
+            <mat-optgroup *ngFor="let manufacturer of manufacturers" [label]="manufacturer.name.toUpperCase()">
+                <mat-option *ngFor="let model of manufacturer.models" [value]="model.reference">
+                    {{model.reference}}
+                </mat-option>
+                <br>
+                <button type="button" mat-raised-button color="primary" data-bs-toggle="modal" (click)="openModelModal(manufacturer.id!)" data-bs-target="#myModal4">
+                    <mat-icon>add</mat-icon>Modèle
+                </button> 
+            </mat-optgroup>
+            <hr>
+            <button type="button" mat-raised-button color="accent" class="mx-1 button-size" data-bs-toggle="modal" data-bs-target="#myModal2">
+                <mat-icon>add</mat-icon> Fabricant
+            </button>
+        </mat-select>
+        <mat-error *ngIf="formGroup.get('selectedModel')?.hasError('required')">
+            Modèle de l'équipement requis
+        </mat-error>
+    </mat-form-field>
+
+
+    <!-- Quantity field -->
+    <mat-form-field class="form-field">
+        <mat-label>Quantité</mat-label>
+        <input matInput formControlName="quantity" type="number" />
+        <mat-error *ngIf="formGroup.get('quantity')?.hasError('required')">
+            Quantité de l'équipement requise
+        </mat-error>
+        <mat-error *ngIf="formGroup.get('quantity')?.hasError('pattern')">
+            Entrez un nombre
+        </mat-error>
+        <button type="button" mat-raised-button color="primary" class="mx-1 button-size" 
+        (click)="generateSerialNumberFormControls(formGroup.get('quantity')?.value)" data-bs-toggle="modal" data-bs-target="#myModal5" 
+        [disabled]="!formGroup.get('selectedModel')?.enabled || !formGroup.get('quantity')?.value || !formGroup.valid">
+            <mat-icon>add</mat-icon> Numéro de série
+        </button>
+    </mat-form-field>
+
+    <!-- Button to open serial number if model and quantity selected -->
+
+    <!-- Description field -->
+    <mat-form-field class="form-field">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="itemDescription"></textarea>
+    </mat-form-field>
+
+    <!-- TODO: Create an input field for an arrival date -->
+    <!-- <mat-form-field>
+        <mat-label>Date d'arrivé</mat-label>
+        <input matInput formControlName="arrivalDate" [matDatepicker]="arrivalDate1">
+        <mat-hint class="text-white">DD/MM/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="arrivalDate1"></mat-datepicker-toggle>
+        <mat-datepicker #arrivalDate1></mat-datepicker>
+        <mat-error *ngIf="formGroup.get('arrivalDate')?.hasError('pattern')">
+            Entrez une date valide
+        </mat-error>
+    </mat-form-field> -->
+      
+    <!-- TODO: Create an input field for warranty -->
+    <!-- <mat-form-field>
+        <mat-label>Date de fin de garantie</mat-label>
+        <input matInput formControlName="warantyDate" [matDatepicker]="warantyDate">
+        <mat-hint class="text-white">DD/MM/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="warantyDate"></mat-datepicker-toggle>
+        <mat-datepicker #warantyDate></mat-datepicker>
+        <mat-error *ngIf="formGroup.get('warantyDate')?.hasError('pattern')">
+            Entrez une date valide
+        </mat-error>
+    </mat-form-field>  -->
+
+    <!-- TODO: make a field to add an image url-->
+    <mat-form-field>
+        <mat-label>url de l'image</mat-label>
+        <input matInput formControlName="imageUrl" type="url" />
+    </mat-form-field>
+
+    <mat-checkbox formControlName="onMaintenance"><p class="text-white mt-2">En maintenance</p></mat-checkbox>
+
+    <mat-checkbox formControlName="existing"><p class="text-white mt-2">Existant</p></mat-checkbox>
+
+    <button [disabled]="!formGroup.valid" type="submit" mat-raised-button color="primary">Envoyer</button>
+</form>
+
+
+
+
+
+<!-- Category modal -->
+<div class="modal fade text-white" id="myModal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <!-- <h5 class="modal-title" id="myModalLabel2">N° de commande : {{ ordered.id }}</h5> -->
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                        
+                <form [formGroup]="formGroupCategory" (ngSubmit)="onSubmitCategory()">
+                    <mat-form-field class="modal-form-field">
+                        <mat-label>Nom de la catégorie</mat-label>
+                        <input matInput formControlName="categoryName" type="text" />
+                        <mat-error *ngIf="formGroupCategory.get('categoryName')?.hasError('required')">
+                            Nom de la catégorie requis
+                        </mat-error>
+
+                    </mat-form-field>
+                    <button [disabled]="!formGroupCategory.valid" type="submit" mat-raised-button color="primary" data-bs-dismiss="modal">Sauvgarder</button>
+                </form>
+          
+            </div>
+            <div class="modal-footer">
+            <button type="button" mat-stroked-button color="basic" data-bs-dismiss="modal">Fermer</button>
+        </div>
+        </div>
+    </div>
+</div>
+  
+<!-- Manufacturer modal -->
+<div class="modal fade text-white" id="myModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <h5 class="modal-title" id="myModalLabel2">N° de commande : {{ ordered.id }}</h5> -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+                
+            <form [formGroup]="formGroupManufacturer" (ngSubmit)="onSubmitManufacturer()">
+                <mat-form-field class="modal-form-field">
+                    <mat-label>Nom du fabricant</mat-label>
+                    <input matInput formControlName="manufacturerName" type="text" />
+                    <mat-error *ngIf="formGroupManufacturer.get('manufacturerName')?.hasError('required')">
+                        Nom du fabricant requis
+                    </mat-error>
+                </mat-form-field>
+                <button [disabled]="!formGroupManufacturer.valid" type="submit" mat-raised-button color="primary" data-bs-dismiss="modal">Sauvgarder</button>
+            </form>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" mat-stroked-button color="basic" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<!-- Sub category modal -->
+<div class="modal fade text-white" id="myModal3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalLabel3" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <h5 class="modal-title" id="myModalLabel2">N° de commande : {{ ordered.id }}</h5> -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+            <form [formGroup]="formGroupSubCategory" (ngSubmit)="onSubmitSubCategory()">
+                <mat-form-field class="modal-form-field">
+                    <mat-label>Nom de la souscatégorie</mat-label>
+                    <input matInput formControlName="subCategoryName" type="text" class="modal-size"/>
+                    <mat-error *ngIf="formGroupCategory.get('subCategoryName')?.hasError('required')">
+                        Nom de la sous-catégorie requis
+                    </mat-error>
+                </mat-form-field>
+                <button [disabled]="!formGroupSubCategory.valid" type="submit" mat-raised-button color="primary" data-bs-dismiss="modal">Sauvgarder</button>
+            </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" mat-stroked-button color="basic" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<!-- Model modal -->
+<div class="modal fade text-white" id="myModal4" #myModal4 data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalLabel4" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <h5 class="modal-title" id="myModalLabel4">N° de commande : {{ ordered.id }}</h5> -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+            <form [formGroup]="formGroupModel" (ngSubmit)="onSubmitModel()">
+                <mat-form-field class="modal-form-field">
+                    <mat-label>Nom de modèle</mat-label>
+                    <input matInput formControlName="modelName" type="text" class="modal-size"/>
+                    <mat-error *ngIf="formGroupModel.get('modelName')?.hasError('required')">
+                        Nom de modèle requis
+                    </mat-error>
+                </mat-form-field>
+                <button [disabled]="!formGroupModel.valid" type="submit" mat-raised-button color="primary" data-bs-dismiss="modal">Sauvgarder</button>
+            </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" mat-stroked-button color="basic" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<!-- Serial number modal -->
+<div class="modal fade text-white" id="myModal5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalLabel5" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <h5 class="modal-title" id="myModalLabel4">N° de commande : {{ ordered.id }}</h5> -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+            <!-- <div *ngFor="let value of inputValues; let i = index">
+                <input type="text" placeholder="Numéro de série {{ i + 1 }}">
+            </div> -->
+            <form [formGroup]="formGroupSerialNumber" (ngSubmit)="onSubmitSerialNumbers()">
+
+                <ng-container formArrayName="serialNumbers">
+                
+                    <ng-container *ngFor="let serialForm of serialNumbers.controls; let i = index">
+
+                        <ng-container [formGroup]="serialForm | formControlForceType">
+
+                            <mat-form-field class="modal-form-field">
+                                <mat-label>Numéro de série {{ i + 1 }}</mat-label>
+                                <input matInput formControlName="serialNumber" type="text" class="modal-size"/>
+                                <mat-error *ngIf="serialForm.get('serialNumber')?.hasError('maxlength')">
+                                    Numéro de série trop long
+                                </mat-error>
+                            </mat-form-field>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+                <button [disabled]="!formGroupSerialNumber.valid" type="submit" mat-raised-button color="primary">Sauvgarder</button>
+            </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" mat-stroked-button color="basic" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+</div> 

@@ -1,0 +1,63 @@
+<!-- App component html page contains immovable elements (elements that'll be on every page) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        
+        <a class="navbar-brand" href="/home"><img src="../assets/images/logo-mns.svg"></a>
+        
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+<!-- TODO: add a category link for admins -->
+<!-- TODO: add a user creation link for admins -->
+<!-- TODO: create a user profile compornent -->
+
+        <div class="navbar-collapse collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+
+                <li class="nav-item" *ngIf="connectedUser != null">
+                    <a class="nav-link" routerLink="home" routerLinkActive="active">Accueil</a>
+                </li>
+
+                <li class="nav-item" *ngIf="connectedUser != null && connectedUser.role?.name != 'ROLE_USER' ">
+                    <a class="nav-link" routerLink="equipement" routerLinkActive="active">Matériel</a>
+                </li>
+                
+                <li class="nav-item" *ngIf="connectedUser != null">
+                    <a class="nav-link" routerLink="orders" routerLinkActive="active">Commandes</a>
+                </li>
+                
+                <li class="nav-item" *ngIf="connectedUser != null && connectedUser.role?.name == 'ROLE_ADMIN' ">
+                    <a class="nav-link" routerLink="utilisateurs" routerLinkActive="active">Utilisateurs</a>
+                </li>
+                
+                <li class="nav-item" *ngIf="connectedUser != null">
+                    <a class="nav-link" routerLink="profile" routerLinkActive="active">Profil</a>
+                </li>
+                
+                
+                <li class="nav-item" *ngIf="connectedUser == null">
+                    <a class="nav-link" routerLink="login" routerLinkActive="active">Connexion</a>
+                </li>
+                
+                <li class="nav-item" *ngIf="connectedUser != null">
+                    <a class="nav-link" style="cursor: pointer;" (click)="onLogout()">Déconnexion</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav align-content-end">
+
+                <li class="nav-item " *ngIf="connectedUser != null">
+                    <a class="nav-link shopping_cart" routerLink="shopping-cart" routerLinkActive="active">
+                        <mat-icon>shopping_cart</mat-icon>
+                    </a>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+</nav>
+
+
+<router-outlet></router-outlet>
+<app-spinner></app-spinner>

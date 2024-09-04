@@ -1,0 +1,104 @@
+<ng-container [ngSwitch]="returnCode">
+  <h2 class="text-center text-white" *ngIf="returnCode === 0 || orders.length != 0">Commandes en attente</h2>
+  <!-- TODO: make checkboxes for selecting multiple orders -->
+  <div class="custom-container" >
+      <table>
+          <tbody>
+            <tr *ngFor="let order of orders" class="border">
+              <td data-label="Utilisateur"  >{{ order.user?.email }}</td>
+              <td data-label="Date de début">{{ order?.startDate | date }}</td>
+              <td data-label="Date de fin"  >{{ order?.endDate | date }}</td>
+              <td data-label="Matériel commandé">
+                  <div *ngFor="let items of order.orderedItems">
+                    <p class="item-color">{{ items?.item?.name }}</p>
+                  </div>
+              </td>
+              <td data-label="Action">
+                <button type="button" mat-raised-button color="accent" class="mx-1 mb-1 " data-bs-toggle="modal" data-bs-target="#myModal2" (click)="getOrderById(order.id)">Consulter</button>
+                <button type="button" mat-raised-button color="warn" class="mx-1 mb-1 " data-bs-toggle="modal" data-bs-target="#myModal1" (click)="getOrderById(order.id)">Refuser</button>
+              </td>
+              
+            </tr>
+          </tbody>
+        </table>
+  </div>
+
+
+
+
+  <!-- Refusal modal -->
+  <div class="modal fade text-white" id="myModal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="myModalLabel">Commande numéro : {{ ordered.id }}, faite par {{ ordered.user?.email }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label for="motive" >Motif de refus:</label>
+          <input type="text" name="motive" id="motive" [(ngModel)]="refusalMotive" class="modal-input">
+        </div>
+        <div class="modal-footer">
+          <button type="button" mat-stroked-button color="basic" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" mat-raised-button color="warn" data-bs-dismiss="modal" (click)="refuseOrder(ordered, refusalMotive)">Envoyer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Consulting modal -->
+  <div class="modal fade text-white" id="myModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="myModalLabel2">N° de commande : {{ ordered.id }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>        
+            <p>De {{ ordered!.startDate | date }} à {{ ordered.endDate | date }}</p>
+          </div>
+          <hr>
+          <div>
+            <p *ngIf="ordered.event">Pour l'événement: {{ ordered.event }}</p>
+          </div>
+          <hr>
+          <div>        
+            <p *ngIf="ordered.address">Adresse: <br>
+              <span>{{ ordered.address.streetNumber }}</span><br>
+              <span>{{ ordered.address.street }}</span><br>
+              <span>{{ ordered.address.addressDetails }}</span><br>
+              <span>{{ ordered.address.postalCode }}</span><br>
+              <span>{{ ordered.address.city }}</span><br>
+              <span>{{ ordered.address.country?.name }}</span><br>
+            </p>
+          </div>
+          <hr>
+          <div *ngFor="let item of ordered.orderedItems">
+            <p>N° équipement : <span class="underline">{{ item.item?.id }}</span></p> 
+            <p>Nom : <span class="item-color">{{ item.item?.name }}</span></p> 
+            <p *ngIf="item.item?.description  != undefined">Description : <span class="item-color">{{ item.item!.description }}</span></p>
+            <p *ngIf="item.item?.serialNumber != undefined">Numéro de série : <span class="item-color">{{ item.item!.serialNumber }}</span></p> 
+            <p *ngIf="item.item?.pricePerDay  != undefined">Prix journalier : <span class="underline">{{ item.item!.pricePerDay }}</span> €</p>
+            <p *ngIf="item.item?.quantity     != undefined">Quantité :        <span class="underline">{{ item.item!.quantity }}</span></p>
+            <hr>
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" mat-stroked-button color="basic" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" mat-raised-button color="primary" (click)="acceptOrder(ordered)" data-bs-dismiss="modal">Accepter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngSwitchCase="404" class="mx-auto text-center">
+    <h2 class="text-center text-white">Il n'y a pas de commandes en attente</h2>
+    <a mat-raised-button color="accent"  routerLink="/home">Retourner à l'accueil</a>
+  </div>
+
+  <div *ngSwitchCase="500">
+    <h2 class="text-center text-white">Unknown error</h2>
+  </div>
+</ng-container>

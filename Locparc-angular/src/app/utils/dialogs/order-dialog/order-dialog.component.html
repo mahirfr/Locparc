@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+    {{data.content}} 
+<hr>
+    <ng-container *ngIf="data.order">
+        <h5 class="text-center">N° de commande : {{ data.order.id }}</h5>
+        <div>        
+            <p>De {{ data.order.startDate | date }} à {{ data.order.endDate | date }}</p>
+        </div>
+        <hr>
+        <div>
+            <p *ngIf="data.order.event">Pour l'événement: {{ data.order.event }}</p>
+        </div>
+        <hr>
+        <div *ngIf="data.order.address">        
+            <p>Adresse: <br>
+            <span>N° de rue: {{ data.order.address.streetNumber }}</span><br>
+            <span>Rue: {{ data.order.address.street }}</span><br>
+            <span>Détails: {{ data.order.address.addressDetails }}</span><br>
+            <span>Code Postal: {{ data.order.address.postalCode }}</span><br>
+            <span>Ville: {{ data.order.address.city }}</span><br>
+            <span>Pays: {{ data.order.address.country?.name }}</span><br>
+            </p>
+        </div>
+        <hr>
+        <div *ngFor="let item of data.order.orderedItems">
+            <p>N° équipement : <span class="underline">{{ item.item?.id }}</span></p> 
+            <p>Nom : <span class="item-color">{{ item.item?.name }}</span></p> 
+            <p *ngIf="item.item?.description  != undefined">Description : <span class="item-color">{{ item.item!.description }}</span></p>
+            <p *ngIf="item.item?.serialNumber != undefined">Numéro de série : <span class="item-color">{{ item.item!.serialNumber }}</span></p> 
+            <p *ngIf="item.item?.pricePerDay  != undefined">Prix journalier : <span class="underline">{{ item.item!.pricePerDay }}</span> €</p>
+            <p *ngIf="item.item?.quantity     != undefined">Quantité :        <span class="underline">{{ item.item!.quantity }}</span></p>
+            <hr>
+        </div>
+        
+    </ng-container>
+
+    <ng-container *ngIf="data.showDatePicker">
+        <mat-form-field>
+            <input matInput [matDatepicker]="picker" placeholder="Choisir la date de fin" [(ngModel)]="data.selectedDate">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </ng-container>
+
+</mat-dialog-content>
+<mat-dialog-actions >
+    <div class="mx-auto">
+        <button mat-button (click)="onCloseClick()">Fermer</button>
+        <button mat-raised-button color="warn" *ngIf="data.action === 'remove' || data.action === 'cancel'" (click)="onConfirm(data.action)">{{ data.action === 'remove' ? "Supprimer" : "Annuler" }}</button>
+        <button mat-raised-button color="warn" *ngIf="data.action === 'approve-return' && data.selectedDate != null" (click)="onConfirm(data.action)">Confirmer</button>
+    </div>
+</mat-dialog-actions>

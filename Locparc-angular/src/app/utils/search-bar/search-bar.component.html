@@ -1,0 +1,70 @@
+<form [formGroup]="searchForm">
+    <input class="form-control mx-auto" type="text" [(ngModel)]="searchQuery" name="search" (input)="search()" autocomplete="off" placeholder="Commencez votre recherche ici" [ngModelOptions]="{standalone: true}">
+    
+<h3 class="text-center text-white mt-3">Filtrer par categorie</h3>
+
+
+    <div class="d-flex justify-content-center text-white">
+        <mat-form-field>
+            <mat-label>Categories</mat-label>
+            <mat-select  formControlName="selectedSubCategories" multiple (selectionChange)="onSelectedCategoryValuesChange()">
+                <mat-optgroup *ngFor="let category of categories" [label]="category.name">
+                <mat-option *ngFor="let subCat of category.subCategories" [value]="subCat.name">
+                    {{subCat.name}}
+                </mat-option>
+                </mat-optgroup>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+</form>
+
+<div class="d-flex justify-content-center mt-5">
+    <div class="container_max_width">
+        <mat-error *ngIf="hasError">
+            <h1>Le matériel n'a pas été trouvée</h1>
+        </mat-error>
+        <div class="row">
+            <div class="col-md-6" *ngFor="let item of searchResults">
+                
+                <mat-card class="example-card min_width mt-3" *ngIf="searchResults.length > 0">
+                    <mat-card-header>
+                        <mat-card-title-group>
+                            <mat-card-title class="me-2">{{ item.name }}</mat-card-title>
+                            <mat-card-subtitle><h3>Quantité disponible: {{ item.quantity }}</h3></mat-card-subtitle>
+                            <img *ngIf="item.imageUrl != null" mat-card-md-image [src]="item.imageUrl" [alt]="item.name"/> 
+                        </mat-card-title-group>
+                    </mat-card-header>
+                    <mat-card-actions class="mx-auto">
+                        <button type="button" mat-raised-button color="accent" class="mx-1 button-size" data-bs-toggle="modal" data-bs-target="#myModal1" (click)="sendItemToModal(item)">Consulter</button>
+                        <button mat-raised-button color="primary" (click)="addToCart(item, 1)">Ajouter au panier</button>
+                    </mat-card-actions>
+                </mat-card> 
+
+            </div>
+        </div>
+    </div> 
+</div>
+
+<div class="modal fade text-white" id="myModal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedItem">
+        <p *ngIf="selectedItem.pricePerDay"><b>Prix journalier:</b> {{ selectedItem.pricePerDay }} €</p><hr>
+        <p *ngIf="selectedItem.description"><b>Description:</b> {{ selectedItem.description }}</p><hr>
+          <b>Sélectionnez la quantité: </b> 
+          <select matNativeControl [(ngModel)]="selectedQuantity">
+            <option *ngFor="let quantity of getRange(selectedItem.quantity)" [value]="quantity">{{ quantity }}</option>
+          </select><hr>
+          <img *ngIf="selectedItem.imageUrl != undefined" class="mt-2 img-max-width img-max-height"  [src]="selectedItem.imageUrl" [alt]="selectedItem.name"/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" mat-stroked-button color="basic" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" mat-raised-button color="primary" data-bs-dismiss="modal" *ngIf="selectedItem && selectedQuantity" (click)="addToCart(selectedItem, selectedQuantity)">Ajouter au panier</button>
+        </div>
+      </div>
+    </div>
+  </div>
