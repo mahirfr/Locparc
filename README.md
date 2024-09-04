@@ -143,3 +143,5 @@ Locparc is an equipment rental management application developed as part of a fin
 ### Mobile Application
 
 - **Framework:** The initial choice was ReactNative but after some thought I would've chosen Flutter.
+
+#### For a more detailed look download the pdf file (only thing is... it's in french as for the project requirememnts).
